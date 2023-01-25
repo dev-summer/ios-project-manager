@@ -9,11 +9,7 @@ import UIKit
 
 final class IssueListViewController: UIViewController {
     private enum Constant {
-        enum Section {
-            case main
-        }
-
-        enum LayoutConstant {
+        enum Layout {
             static let spacing = CGFloat(8)
             static let margin = CGFloat(12)
         }
@@ -22,6 +18,10 @@ final class IssueListViewController: UIViewController {
             static let delete = "Delete"
             static let minimumPressDuration = 0.5
             static let alertActionText = "Move to "
+        }
+        
+        enum Section {
+            case main
         }
     }
     
@@ -39,12 +39,12 @@ final class IssueListViewController: UIViewController {
     private var stackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
-        stack.spacing = Constant.LayoutConstant.spacing
+        stack.spacing = Constant.Layout.spacing
         stack.isLayoutMarginsRelativeArrangement = true
-        stack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: Constant.LayoutConstant.margin,
-                                                                 leading: Constant.LayoutConstant.margin,
-                                                                 bottom: Constant.LayoutConstant.margin,
-                                                                 trailing: Constant.LayoutConstant.margin)
+        stack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: Constant.Layout.margin,
+                                                                 leading: Constant.Layout.margin,
+                                                                 bottom: Constant.Layout.margin,
+                                                                 trailing: Constant.Layout.margin)
         stack.translatesAutoresizingMaskIntoConstraints = false
         
         return stack

@@ -9,14 +9,14 @@ import UIKit
 
 final class MainViewController: UIViewController {
     private enum Constant {
+        enum Layout {
+            static let mainStackViewMargin = CGFloat(8)
+            static let columnSpacing = CGFloat(16)
+        }
+        
         enum Namespace {
             static let navigationTitle = "Project Manager"
             static let plusImage = "plus"
-        }
-        
-        enum LayoutConstant {
-            static let mainStackViewMargin = CGFloat(8)
-            static let columnSpacing = CGFloat(16)
         }
     }
     
@@ -27,14 +27,14 @@ final class MainViewController: UIViewController {
     private var mainStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
-        stack.spacing = Constant.LayoutConstant.columnSpacing
+        stack.spacing = Constant.Layout.columnSpacing
         stack.distribution = .fillEqually
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.isLayoutMarginsRelativeArrangement = true
-        stack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: Constant.LayoutConstant.mainStackViewMargin,
-                                                                 leading: Constant.LayoutConstant.mainStackViewMargin,
-                                                                 bottom: Constant.LayoutConstant.mainStackViewMargin,
-                                                                 trailing: Constant.LayoutConstant.mainStackViewMargin)
+        stack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: Constant.Layout.mainStackViewMargin,
+                                                                 leading: Constant.Layout.mainStackViewMargin,
+                                                                 bottom: Constant.Layout.mainStackViewMargin,
+                                                                 trailing: Constant.Layout.mainStackViewMargin)
         
         return stack
     }()

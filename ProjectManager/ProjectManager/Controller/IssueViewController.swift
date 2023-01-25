@@ -9,7 +9,7 @@ import UIKit
 
 final class IssueViewController: UIViewController {
     private enum Constant {
-        enum LayoutConstant {
+        enum Layout {
             static let stackViewSpacing = CGFloat(8)
             static let margin = CGFloat(20)
             static let titleTextFieldPadding = CGFloat(12)
@@ -38,27 +38,27 @@ final class IssueViewController: UIViewController {
     private var stackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
-        stack.spacing = Constant.LayoutConstant.stackViewSpacing
+        stack.spacing = Constant.Layout.stackViewSpacing
         stack.isLayoutMarginsRelativeArrangement = true
-        stack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: Constant.LayoutConstant.margin,
-                                                                 leading: Constant.LayoutConstant.margin,
-                                                                 bottom: Constant.LayoutConstant.margin,
-                                                                 trailing: Constant.LayoutConstant.margin)
+        stack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: Constant.Layout.margin,
+                                                                 leading: Constant.Layout.margin,
+                                                                 bottom: Constant.Layout.margin,
+                                                                 trailing: Constant.Layout.margin)
         stack.translatesAutoresizingMaskIntoConstraints = false
         
         return stack
     }()
     
     private var titleTextField: PaddedTextField = {
-        let padding = UIEdgeInsets(top: Constant.LayoutConstant.titleTextFieldPadding,
-                                   left: Constant.LayoutConstant.titleTextFieldPadding,
-                                   bottom: Constant.LayoutConstant.titleTextFieldPadding,
-                                   right: Constant.LayoutConstant.titleTextFieldPadding)
+        let padding = UIEdgeInsets(top: Constant.Layout.titleTextFieldPadding,
+                                   left: Constant.Layout.titleTextFieldPadding,
+                                   bottom: Constant.Layout.titleTextFieldPadding,
+                                   right: Constant.Layout.titleTextFieldPadding)
         let textField = PaddedTextField(padding: padding)
         textField.backgroundColor = .systemBackground
         textField.placeholder = Constant.Namespace.title
         textField.setContentHuggingPriority(.required, for: .vertical)
-        textField.addShadow(radius: Constant.LayoutConstant.shadowRadius)
+        textField.addShadow(radius: Constant.Layout.shadowRadius)
         
         return textField
     }()
@@ -77,7 +77,7 @@ final class IssueViewController: UIViewController {
         let textView = UITextView()
         textView.backgroundColor = .systemBackground
         textView.setContentHuggingPriority(.defaultLow, for: .vertical)
-        textView.addShadow(radius: Constant.LayoutConstant.shadowRadius)
+        textView.addShadow(radius: Constant.Layout.shadowRadius)
         
         return textView
     }()

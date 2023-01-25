@@ -9,7 +9,7 @@ import UIKit
 
 final class CustomContentView: UIView, UIContentView {
     private enum Constant {
-        enum LayoutConstant {
+        enum Layout {
             static let margin = CGFloat(8)
             static let borderWidth = CGFloat(1)
             static let cornerRadius = CGFloat(8)
@@ -28,13 +28,13 @@ final class CustomContentView: UIView, UIContentView {
         stack.axis = .vertical
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.isLayoutMarginsRelativeArrangement = true
-        stack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: Constant.LayoutConstant.margin,
-                                                                 leading: Constant.LayoutConstant.margin,
-                                                                 bottom: Constant.LayoutConstant.margin,
-                                                                 trailing: Constant.LayoutConstant.margin)
-        stack.layer.borderWidth = Constant.LayoutConstant.borderWidth
+        stack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: Constant.Layout.margin,
+                                                                 leading: Constant.Layout.margin,
+                                                                 bottom: Constant.Layout.margin,
+                                                                 trailing: Constant.Layout.margin)
+        stack.layer.borderWidth = Constant.Layout.borderWidth
         stack.layer.borderColor = UIColor.systemGray.cgColor
-        stack.layer.cornerRadius = Constant.LayoutConstant.cornerRadius
+        stack.layer.cornerRadius = Constant.Layout.cornerRadius
         
         return stack
     }()
@@ -50,7 +50,7 @@ final class CustomContentView: UIView, UIContentView {
         let label = UILabel()
         label.font = .preferredFont(forTextStyle: .body)
         label.textColor = .systemGray
-        label.numberOfLines = Constant.LayoutConstant.maxBodyLineCount
+        label.numberOfLines = Constant.Layout.maxBodyLineCount
         
         return label
     }()
@@ -70,10 +70,10 @@ final class CustomContentView: UIView, UIContentView {
     }
     
     private func configureViews() {
-        directionalLayoutMargins = NSDirectionalEdgeInsets(top: Constant.LayoutConstant.margin,
-                                                           leading: Constant.LayoutConstant.margin,
-                                                           bottom: Constant.LayoutConstant.margin,
-                                                           trailing: Constant.LayoutConstant.margin)
+        directionalLayoutMargins = NSDirectionalEdgeInsets(top: Constant.Layout.margin,
+                                                           leading: Constant.Layout.margin,
+                                                           bottom: Constant.Layout.margin,
+                                                           trailing: Constant.Layout.margin)
         configureStackView()
     }
     
