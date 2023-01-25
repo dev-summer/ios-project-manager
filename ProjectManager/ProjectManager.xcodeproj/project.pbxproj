@@ -79,6 +79,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5772F438297FD08300D1DA30 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C7431F1025F51E1E0094C4CF /* LaunchScreen.storyboard */,
+				C7431F0E25F51E1E0094C4CF /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		57A73EDE2977C7CE007B6587 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
@@ -152,6 +161,7 @@
 		C7431F0425F51E1D0094C4CF /* ProjectManager */ = {
 			isa = PBXGroup;
 			children = (
+				5772F438297FD08300D1DA30 /* Resources */,
 				57A73EDE2977C7CE007B6587 /* Extension */,
 				57AA866129703BAC00E2971D /* Common */,
 				57AA865B296FCAB900E2971D /* Model */,
@@ -159,8 +169,6 @@
 				57AA865C296FCABE00E2971D /* Controller */,
 				C7431F0525F51E1D0094C4CF /* AppDelegate.swift */,
 				C7431F0725F51E1D0094C4CF /* SceneDelegate.swift */,
-				C7431F0E25F51E1E0094C4CF /* Assets.xcassets */,
-				C7431F1025F51E1E0094C4CF /* LaunchScreen.storyboard */,
 				C7431F1325F51E1E0094C4CF /* Info.plist */,
 			);
 			path = ProjectManager;
