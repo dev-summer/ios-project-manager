@@ -40,7 +40,7 @@ final class HeaderView: UIView {
         super.init(frame: frame)
         configureViews()
     }
-
+    
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -51,10 +51,12 @@ final class HeaderView: UIView {
     }
     
     private func configureViews() {
-        directionalLayoutMargins = NSDirectionalEdgeInsets(top: .zero,
-                                                           leading: Constant.Layout.margin,
-                                                           bottom: .zero,
-                                                           trailing: Constant.Layout.margin)
+        directionalLayoutMargins = NSDirectionalEdgeInsets(
+            top: .zero,
+            leading: Constant.Layout.margin,
+            bottom: .zero,
+            trailing: Constant.Layout.margin
+        )
         addSubview(stackView)
         configureStackView()
         configureCountLabel()
@@ -74,8 +76,10 @@ final class HeaderView: UIView {
     
     private func configureCountLabel() {
         NSLayoutConstraint.activate([
-            countLabel.heightAnchor.constraint(equalTo: titleLabel.heightAnchor,
-                                               multiplier: Constant.Layout.countLabelSizeRatio),
+            countLabel.heightAnchor.constraint(
+                equalTo: titleLabel.heightAnchor,
+                multiplier: Constant.Layout.countLabelSizeRatio
+            ),
             countLabel.widthAnchor.constraint(equalTo: countLabel.heightAnchor)
         ])
     }

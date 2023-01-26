@@ -35,10 +35,12 @@ final class IssueListViewController: UIViewController {
         stack.axis = .vertical
         stack.spacing = Constant.Layout.spacing
         stack.isLayoutMarginsRelativeArrangement = true
-        stack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: Constant.Layout.margin,
-                                                                 leading: Constant.Layout.margin,
-                                                                 bottom: Constant.Layout.margin,
-                                                                 trailing: Constant.Layout.margin)
+        stack.directionalLayoutMargins = NSDirectionalEdgeInsets(
+            top: Constant.Layout.margin,
+            leading: Constant.Layout.margin,
+            bottom: Constant.Layout.margin,
+            trailing: Constant.Layout.margin
+        )
         stack.translatesAutoresizingMaskIntoConstraints = false
         
         return stack
@@ -72,8 +74,10 @@ final class IssueListViewController: UIViewController {
             // 테이블뷰에 스냅샷
             self.applySnapshot(issues: issues)
             // countLabel 업데이트
-            self.headerView.configureContent(title: String(describing: self.viewModel.status),
-                                             count: issues.count)
+            self.headerView.configureContent(
+                title: String(describing: self.viewModel.status),
+                count: issues.count
+            )
         }
         
         // weak self를 습관처럼 써주는 이유
@@ -116,8 +120,10 @@ final class IssueListViewController: UIViewController {
         listConfiguration.separatorConfiguration.topSeparatorVisibility = .hidden
         listConfiguration.separatorConfiguration.bottomSeparatorVisibility = .hidden
         listConfiguration.trailingSwipeActionsConfigurationProvider = { indexPath in
-            let deleteAction = UIContextualAction(style: .destructive,
-                                                  title: Constant.Namespace.delete) { _, _, _  in
+            let deleteAction = UIContextualAction(
+                style: .destructive,
+                title: Constant.Namespace.delete
+            ) { _, _, _  in
                 guard let issue = self.dataSource?.itemIdentifier(for: indexPath) else { return }
                 
                 self.viewModel.action(action: .delete(issue: issue))
@@ -134,16 +140,17 @@ final class IssueListViewController: UIViewController {
     private func configureDataSource() {
         guard let collectionView = collectionView else { return }
         
-        let cellRegistration = UICollectionView.CellRegistration<CustomListCell, Issue> {
-            (cell, indexPath, item) in
+        let cellRegistration = UICollectionView.CellRegistration<CustomListCell, Issue> { (cell, indexPath, item) in
             cell.item = item
         }
         
         dataSource = UICollectionViewDiffableDataSource<Constant.Section, Issue>(collectionView: collectionView) {
             collectionView, indexPath, itemIdentifier in
-            let cell = collectionView.dequeueConfiguredReusableCell(using: cellRegistration,
-                                                                    for: indexPath,
-                                                                    item: itemIdentifier)
+            let cell = collectionView.dequeueConfiguredReusableCell(
+                using: cellRegistration,
+                for: indexPath,
+                item: itemIdentifier
+            )
             
             return cell
         }
@@ -164,8 +171,10 @@ final class IssueListViewController: UIViewController {
     }
     
     private func setLongPressGestureRecognizer() {
-        let gestureRecognizer = UILongPressGestureRecognizer(target: self,
-                                                             action: #selector(handleLongPress(gestureRecognizer: )))
+        let gestureRecognizer = UILongPressGestureRecognizer(
+            target: self,
+            action: #selector(handleLongPress(gestureRecognizer: ))
+        )
         gestureRecognizer.minimumPressDuration = Constant.Namespace.minimumPressDuration
         self.view.addGestureRecognizer(gestureRecognizer)
     }
@@ -187,9 +196,11 @@ final class IssueListViewController: UIViewController {
         //
         
         // alertController 만드는 부분 분리
-        let alertController = UIAlertController(title: nil,
-                                                message: nil,
-                                                preferredStyle: .actionSheet)
+        let alertController = UIAlertController(
+            title: nil,
+            message: nil,
+            preferredStyle: .actionSheet
+        )
         
         statusArr.map { createAlertAction(issue: issue, to: $0) }
             .forEach { alertController.addAction($0) }
@@ -203,8 +214,10 @@ final class IssueListViewController: UIViewController {
     }
     
     private func createAlertAction(issue: Issue, to status: Status) -> UIAlertAction {
-        let action = UIAlertAction(title: Constant.Namespace.alertActionText + String(describing: status),
-                                   style: .default) { _ in
+        let action = UIAlertAction(
+            title: Constant.Namespace.alertActionText + String(describing: status),
+            style: .default
+        ) { _ in
             self.viewModel.action(action: .move(issue: issue, to: status))
         }
         

@@ -24,7 +24,7 @@ final class IssueViewController: UIViewController {
             static let title = "Title"
         }
     }
-
+    
     private var viewModel: IssueViewModel
     weak var delegate: IssueDelegate?
     
@@ -33,20 +33,24 @@ final class IssueViewController: UIViewController {
         stack.axis = .vertical
         stack.spacing = Constant.Layout.stackViewSpacing
         stack.isLayoutMarginsRelativeArrangement = true
-        stack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: Constant.Layout.margin,
-                                                                 leading: Constant.Layout.margin,
-                                                                 bottom: Constant.Layout.margin,
-                                                                 trailing: Constant.Layout.margin)
+        stack.directionalLayoutMargins = NSDirectionalEdgeInsets(
+            top: Constant.Layout.margin,
+            leading: Constant.Layout.margin,
+            bottom: Constant.Layout.margin,
+            trailing: Constant.Layout.margin
+        )
         stack.translatesAutoresizingMaskIntoConstraints = false
         
         return stack
     }()
     
     private var titleTextField: PaddedTextField = {
-        let padding = UIEdgeInsets(top: Constant.Layout.titleTextFieldPadding,
-                                   left: Constant.Layout.titleTextFieldPadding,
-                                   bottom: Constant.Layout.titleTextFieldPadding,
-                                   right: Constant.Layout.titleTextFieldPadding)
+        let padding = UIEdgeInsets(
+            top: Constant.Layout.titleTextFieldPadding,
+            left: Constant.Layout.titleTextFieldPadding,
+            bottom: Constant.Layout.titleTextFieldPadding,
+            right: Constant.Layout.titleTextFieldPadding
+        )
         let textField = PaddedTextField(padding: padding)
         textField.backgroundColor = .systemBackground
         textField.placeholder = Constant.Namespace.title
@@ -103,13 +107,15 @@ final class IssueViewController: UIViewController {
     }
     
     private func configureNavigationBar() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: Constant.Namespace.done,
-                                                            primaryAction: UIAction { _ in
-            self.viewModel
-                .action(action: .tapDoneButton(title: self.titleTextField.text ?? String.init(),
-                                                    body: self.bodyTextView.text,
-                                                    date: self.datePicker.date))
-        })
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: Constant.Namespace.done,
+            primaryAction: UIAction { _ in
+                self.viewModel.action(action: .tapDoneButton(
+                    title: self.titleTextField.text ?? String.init(),
+                    body: self.bodyTextView.text,
+                    date: self.datePicker.date
+                ))
+            })
     }
     
     private func configureStackView() {
@@ -119,7 +125,7 @@ final class IssueViewController: UIViewController {
             stackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ])
-
+        
         [titleTextField, datePicker, bodyTextView].forEach(stackView.addArrangedSubview(_:))
     }
 }
@@ -134,18 +140,20 @@ extension IssueViewController: IssueViewModelDelegate {
     func configureNewIssueNavigationBar() {
         title = String(describing: Status.todo)
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Constant.Namespace.cancel,
-                                                           primaryAction: UIAction { _ in
-            self.viewModel.action(action: .tapCancelButton)
-        })
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            title: Constant.Namespace.cancel,
+            primaryAction: UIAction { _ in
+                self.viewModel.action(action: .tapCancelButton)
+            })
     }
     
     func configureExistingIssueNavigationBar(title: String) {
         self.title = title
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Constant.Namespace.edit,
-                                                           primaryAction: UIAction { _ in
-            self.viewModel.action(action: .tapEditButton)
-        })
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            title: Constant.Namespace.edit,
+            primaryAction: UIAction { _ in
+                self.viewModel.action(action: .tapEditButton)
+            })
     }
     
     func configureEditablity(_ isEditable: Bool) {

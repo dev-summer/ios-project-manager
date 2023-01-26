@@ -67,11 +67,13 @@ final class IssueViewModel {
 
     private func addOrUpdate(title: String, body: String, date: Date) {
         if issue == nil {
-            let newIssue = Issue(id: UUID(),
+            let newIssue = Issue(
+                id: UUID(),
                           status: .todo,
                           title: title,
                           body: body,
-                          deadline: date)
+                          deadline: date
+            )
             delegate?.add(issue: newIssue)
         } else {
             updateIssue(title: title, body: body, date: date)
