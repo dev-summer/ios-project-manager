@@ -91,7 +91,7 @@ final class IssueViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        viewModel.vcDelegate = self
+        viewModel.delegate = self
         viewModel.action(action: .onAppear)
     }
     

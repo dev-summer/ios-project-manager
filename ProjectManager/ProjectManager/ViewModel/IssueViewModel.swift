@@ -34,7 +34,7 @@ final class IssueViewModel {
         }
     }
 
-    weak var vcDelegate: IssueViewModelDelegate?
+    weak var delegate: IssueViewModelDelegate?
     private var issue: Issue?
     private var isEditable: Bool
 
@@ -49,19 +49,19 @@ final class IssueViewModel {
             addOrUpdate(title: title, body: body, date: date)
         case .onAppear:
             issue.flatMap { issue in
-                self.vcDelegate?.configureContents(with: issue)
+                delegate?.configureContents(with: issue)
             }
             configureNavigationBar()
-            vcDelegate?.configureEditablity(isEditable)
+            delegate?.configureEditablity(isEditable)
         case .tapEditButton:
             isEditable.toggle()
-            vcDelegate?.configureEditablity(isEditable)
+            delegate?.configureEditablity(isEditable)
         case .tapCancelButton:
-            vcDelegate?.dismissModal()
+            delegate?.dismissModal()
         case let .enterText(textCount):
-            if textCount > Constant.Namespace.maxBodyTextCount { vcDelegate?.deleteLastCharacter() }
+            if textCount > Constant.Namespace.maxBodyTextCount { delegate?.deleteLastCharacter() }
         case .dismissModal:
-            vcDelegate?.dismissModal()
+            delegate?.dismissModal()
         }
     }
 
@@ -72,10 +72,10 @@ final class IssueViewModel {
                           title: title,
                           body: body,
                           deadline: date)
-            vcDelegate?.add(issue: newIssue)
+            delegate?.add(issue: newIssue)
         } else {
             updateIssue(title: title, body: body, date: date)
-            issue.flatMap { vcDelegate?.update(issue: $0) }
+            issue.flatMap { delegate?.update(issue: $0) }
         }
     }
     
@@ -87,9 +87,9 @@ final class IssueViewModel {
     
     private func configureNavigationBar() {
         if isEditable {
-            vcDelegate?.configureNewIssueNavigationBar()
+            delegate?.configureNewIssueNavigationBar()
         } else {
-            vcDelegate?.configureExistingIssueNavigationBar(title: String(describing: issue?.status ?? .todo))
+            delegate?.configureExistingIssueNavigationBar(title: String(describing: issue?.status ?? .todo))
         }
     }
 }
