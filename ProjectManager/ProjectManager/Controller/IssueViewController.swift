@@ -24,16 +24,9 @@ final class IssueViewController: UIViewController {
             static let title = "Title"
         }
     }
-    
-    private var issue: Issue
-    private var delegate: IssueDelegate?
-    private var isEditable: Bool = true {
-        didSet {
-            titleTextField.isEnabled = isEditable
-            datePicker.isEnabled = isEditable
-            bodyTextView.isEditable = isEditable
-        }
-    }
+
+    private var viewModel: IssueViewModel
+    weak var delegate: IssueDelegate?
     
     private var stackView: UIStackView = {
         let stack = UIStackView()
@@ -57,6 +50,8 @@ final class IssueViewController: UIViewController {
         let textField = PaddedTextField(padding: padding)
         textField.backgroundColor = .systemBackground
         textField.placeholder = Constant.Namespace.title
+        textField.font = .preferredFont(forTextStyle: .body)
+        textField.adjustsFontForContentSizeCategory = true
         textField.setContentHuggingPriority(.required, for: .vertical)
         textField.addShadow(radius: Constant.Layout.shadowRadius)
         
@@ -76,22 +71,16 @@ final class IssueViewController: UIViewController {
     private var bodyTextView: UITextView = {
         let textView = UITextView()
         textView.backgroundColor = .systemBackground
+        textView.font = .preferredFont(forTextStyle: .body)
+        textView.adjustsFontForContentSizeCategory = true
         textView.setContentHuggingPriority(.defaultLow, for: .vertical)
         textView.addShadow(radius: Constant.Layout.shadowRadius)
         
         return textView
     }()
     
-    init(delegate: IssueDelegate) {
-        self.delegate = delegate
-        self.issue = Issue(id: UUID(), status: .todo, title: String.init(), body: String.init(), deadline: datePicker.date)
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    init(issue: Issue, delegate: IssueDelegate) {
-        self.issue = issue
-        self.delegate = delegate
-        defer { self.isEditable = false }
+    init(viewModel: IssueViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -102,7 +91,8 @@ final class IssueViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        configureContents()
+        viewModel.vcDelegate = self
+        viewModel.action(action: .onAppear)
     }
     
     private func configureUI() {
@@ -113,31 +103,13 @@ final class IssueViewController: UIViewController {
     }
     
     private func configureNavigationBar() {
-        if isEditable {
-            title = String(describing: Status.todo)
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: Constant.Namespace.done,
-                                                                primaryAction: UIAction { _ in
-                self.updateIssue()
-                self.delegate?.shouldAdd(issue: self.issue)
-                self.dismiss(animated: true)
-            })
-            navigationItem.leftBarButtonItem = UIBarButtonItem(title: Constant.Namespace.cancel,
-                                                               primaryAction: UIAction { _ in
-                self.dismiss(animated: true)
-            })
-        } else {
-            title = String(describing: issue.status)
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: Constant.Namespace.done,
-                                                                primaryAction: UIAction { _ in
-                self.updateIssue()
-                self.delegate?.shouldUpdate(issue: self.issue)
-                self.dismiss(animated: true)
-            })
-            navigationItem.leftBarButtonItem = UIBarButtonItem(title: Constant.Namespace.edit,
-                                                               primaryAction: UIAction { _ in
-                self.isEditable = true
-            })
-        }
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: Constant.Namespace.done,
+                                                            primaryAction: UIAction { _ in
+            self.viewModel
+                .action(action: .tapDoneButton(title: self.titleTextField.text ?? String.init(),
+                                                    body: self.bodyTextView.text,
+                                                    date: self.datePicker.date))
+        })
     }
     
     private func configureStackView() {
@@ -150,24 +122,59 @@ final class IssueViewController: UIViewController {
 
         [titleTextField, datePicker, bodyTextView].forEach(stackView.addArrangedSubview(_:))
     }
-    
-    private func configureContents() {
-        titleTextField.text = issue.title
-        datePicker.date = issue.deadline
-        bodyTextView.text = issue.body
-    }
+}
 
-    private func updateIssue() {
-        issue.title = titleTextField.text ?? String.init()
-        issue.body = bodyTextView.text
-        issue.deadline = datePicker.date
+extension IssueViewController: IssueViewModelDelegate {
+    func configureContents(with issue: Issue?) {
+        titleTextField.text = issue?.title
+        datePicker.date = issue?.deadline ?? Date()
+        bodyTextView.text = issue?.body
+    }
+    
+    func configureNewIssueNavigationBar() {
+        title = String(describing: Status.todo)
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Constant.Namespace.cancel,
+                                                           primaryAction: UIAction { _ in
+            self.viewModel.action(action: .tapCancelButton)
+        })
+    }
+    
+    func configureExistingIssueNavigationBar(title: String) {
+        self.title = title
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Constant.Namespace.edit,
+                                                           primaryAction: UIAction { _ in
+            self.viewModel.action(action: .tapEditButton)
+        })
+    }
+    
+    func configureEditablity(_ isEditable: Bool) {
+        titleTextField.isEnabled = isEditable
+        datePicker.isEnabled = isEditable
+        bodyTextView.isEditable = isEditable
+    }
+    
+    func dismissModal() {
+        self.dismiss(animated: true)
+    }
+    
+    func deleteLastCharacter() {
+        bodyTextView.deleteBackward()
+    }
+    
+    func add(issue: Issue) {
+        delegate?.shouldAdd(issue: issue)
+        viewModel.action(action: .dismissModal)
+    }
+    
+    func update(issue: Issue) {
+        delegate?.shouldUpdate(issue: issue)
+        viewModel.action(action: .dismissModal)
     }
 }
 
 extension IssueViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
-        if textView.text.count > Constant.Namespace.maxBodyTextCount {
-            textView.deleteBackward()
-        }
+        viewModel.action(action: .enterText(textCount: textView.text.count))
     }
 }

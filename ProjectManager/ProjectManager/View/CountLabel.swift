@@ -31,17 +31,15 @@ final class CountLabel: UILabel {
         layer.cornerRadius = bounds.size.height / 2
         layer.masksToBounds = true
     }
+    
+    func updateCountLabel(with issueCount: Int) {
+        self.text = Constant.Namespace.formatLabelText(issueCount)
+    }
 }
 
 private extension CountLabel.Constant.Namespace {
     static func formatLabelText(_ issueCount: Int) -> String {
         return (issueCount > CountLabel.Constant.Namespace.maxCount ?
                 "\(CountLabel.Constant.Namespace.maxCount)+" : issueCount.description)
-    }
-}
-
-extension CountLabel: IssueCountDelegate {
-    func updateCountLabel(with issueCount: Int) {
-        self.text = Constant.Namespace.formatLabelText(issueCount)
     }
 }

@@ -25,15 +25,9 @@ final class IssueListViewController: UIViewController {
         }
     }
     
-    private var status: Status
-    private var issues: [Issue] = [] {
-        didSet {
-            issueCountDelegate?.updateCountLabel(with: issues.count)
-        }
-    }
+    private var viewModel: IssueListViewModel
+    var deliveryHandler: ((Issue, Status) -> Void)?
     
-    private var issueListDelegate: IssueListDelegate?
-    private var issueCountDelegate: IssueCountDelegate?
     private var dataSource: UICollectionViewDiffableDataSource<Constant.Section, Issue>?
     
     private var stackView: UIStackView = {
@@ -53,13 +47,11 @@ final class IssueListViewController: UIViewController {
     private var headerView = HeaderView()
     private var collectionView: UICollectionView?
     
-    init(frame: CGRect = .zero, status: Status, delegate: IssueListDelegate) {
-        self.status = status
-        self.issueListDelegate = delegate
-        self.issueCountDelegate = headerView.countLabel
+    init(frame: CGRect = .zero, viewModel: IssueListViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -68,12 +60,38 @@ final class IssueListViewController: UIViewController {
         super.viewDidLoad()
         configureUI()
         configureDataSource()
-        applySnapshot()
         setLongPressGestureRecognizer()
+        
+        viewModel.bindStatus { (status, indexPath) in
+            let arr = Status.allCases.filter { $0 != status }
+            self.showPopover(statusArr: arr, at: indexPath)
+        }
+        
+        viewModel.bindIssues { [weak self] issues in
+            guard let self = self else { return }
+            // 테이블뷰에 스냅샷
+            self.applySnapshot(issues: issues)
+            // countLabel 업데이트
+            self.headerView.configureContent(title: String(describing: self.viewModel.status),
+                                             count: issues.count)
+        }
+        
+        // weak self를 습관처럼 써주는 이유
+        // weak self를 안써주면 클로저 안의 작업이 끝나고 나서야 뷰컨이 deinit
+        // weak self를 쓰면 클로저한테 self를 복사해주고 난 뒤에 뷰컨 바로 deinit
+        // -> 메모리 관리 측면에서 안전
+        viewModel.bindIssueDeliveryHandler { issue in
+            self.deliveryHandler?(issue, issue.status)
+        }
+        
+        viewModel.bindDeleteHandler(closure: self.deleteIssue(issue:))
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.configureInitialStatus()
     }
     
     private func configureUI() {
-        configureHeaderView()
         configureCollectionView()
         configureStackView()
     }
@@ -93,10 +111,6 @@ final class IssueListViewController: UIViewController {
         ])
     }
     
-    private func configureHeaderView() {
-        headerView.configureContent(title: String(describing: status), count: issues.count)
-    }
-    
     private func configureCollectionView() {
         var listConfiguration = UICollectionLayoutListConfiguration(appearance: .plain)
         listConfiguration.separatorConfiguration.topSeparatorVisibility = .hidden
@@ -106,7 +120,7 @@ final class IssueListViewController: UIViewController {
                                                   title: Constant.Namespace.delete) { _, _, _  in
                 guard let issue = self.dataSource?.itemIdentifier(for: indexPath) else { return }
                 
-                self.deleteIssue(issue: issue)
+                self.viewModel.action(action: .delete(issue: issue))
             }
             
             return UISwipeActionsConfiguration(actions: [deleteAction])
@@ -135,7 +149,7 @@ final class IssueListViewController: UIViewController {
         }
     }
     
-    private func applySnapshot() {
+    private func applySnapshot(issues: [Issue]) {
         var snapshot = NSDiffableDataSourceSnapshot<Constant.Section, Issue>()
         snapshot.appendSections([.main])
         snapshot.appendItems(issues, toSection: .main)
@@ -143,11 +157,9 @@ final class IssueListViewController: UIViewController {
     }
     
     private func deleteIssue(issue: Issue) {
-        guard var snapshot = dataSource?.snapshot(),
-              let index = issues.firstIndex(where: {$0.id == issue.id}) else { return }
+        guard var snapshot = dataSource?.snapshot() else { return }
         
         snapshot.deleteItems([issue])
-        issues.remove(at: index)
         dataSource?.apply(snapshot, animatingDifferences: true)
     }
     
@@ -163,65 +175,50 @@ final class IssueListViewController: UIViewController {
         
         let point = gestureRecognizer.location(in: collectionView)
         let indexPath = self.collectionView?.indexPathForItem(at: point)
-        showPopover(indexPath: indexPath)
+        
+        viewModel.action(action: .showPopOver(index: indexPath))
     }
     
-    private func showPopover(indexPath: IndexPath?) {
+    private func showPopover(statusArr: [Status], at indexPath: IndexPath?) {
+        // 굳이 indexPath로 받아올 필요가 잇나? 그냥 issue로 만들어준 다음에 받아와도 되는데
         guard let indexPath = indexPath,
               let selectedCell = collectionView?.cellForItem(at: indexPath) as? CustomListCell,
               let issue = selectedCell.item else { return }
+        //
         
+        // alertController 만드는 부분 분리
         let alertController = UIAlertController(title: nil,
                                                 message: nil,
                                                 preferredStyle: .actionSheet)
-        createAlertActions(for: issue).forEach(alertController.addAction(_:))
+        
+        statusArr.map { createAlertAction(issue: issue, to: $0) }
+            .forEach { alertController.addAction($0) }
+        
         alertController.popoverPresentationController?.sourceView = collectionView
         alertController.popoverPresentationController?.sourceRect = selectedCell.frame
         alertController.popoverPresentationController?.permittedArrowDirections = [.up, .down]
-        present(alertController, animated: true)
-    }
-    
-    private func createAlertActions(for issue: Issue) -> [UIAlertAction] {
-        var actions: [UIAlertAction] = []
-        switch status {
-        case .todo:
-            actions.append(createAlertAction(issue: issue, to: .doing))
-            actions.append(createAlertAction(issue: issue, to: .done))
-        case .doing:
-            actions.append(createAlertAction(issue: issue, to: .todo))
-            actions.append(createAlertAction(issue: issue, to: .done))
-        case .done:
-            actions.append(createAlertAction(issue: issue, to: .todo))
-            actions.append(createAlertAction(issue: issue, to: .doing))
-        }
+        //
         
-        return actions
+        present(alertController, animated: true)
     }
     
     private func createAlertAction(issue: Issue, to status: Status) -> UIAlertAction {
         let action = UIAlertAction(title: Constant.Namespace.alertActionText + String(describing: status),
                                    style: .default) { _ in
-            var modifiedIssue = issue
-            modifiedIssue.status = status
-            self.deleteIssue(issue: issue)
-            self.issueListDelegate?.shouldDeliver(issue: modifiedIssue)
+            self.viewModel.action(action: .move(issue: issue, to: status))
         }
-
+        
         return action
     }
 }
 
 extension IssueListViewController: IssueDelegate {
     func shouldAdd(issue: Issue) {
-        issues.append(issue)
-        applySnapshot()
+        viewModel.action(action: .add(issue: issue))
     }
     
     func shouldUpdate(issue: Issue) {
-        guard let index = issues.firstIndex(where: {$0.id == issue.id}) else { return }
-        
-        issues[index] = issue
-        applySnapshot()
+        viewModel.action(action: .update(issue: issue))
     }
 }
 
@@ -229,7 +226,9 @@ extension IssueListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let issue = dataSource?.itemIdentifier(for: indexPath) else { return }
         
-        let issueViewcontroller = IssueViewController(issue: issue, delegate: self)
+        let issueViewModel: IssueViewModel = IssueViewModel(issue: issue, isExistingIssue: true, isEditable: false)
+        let issueViewcontroller = IssueViewController(viewModel: issueViewModel)
+        issueViewcontroller.delegate = self
         let navigationViewController = UINavigationController(rootViewController: issueViewcontroller)
         self.present(navigationViewController, animated: true)
     }

@@ -20,11 +20,27 @@ final class MainViewController: UIViewController {
         }
     }
     
-    private lazy var todoListViewController = IssueListViewController(status: .todo, delegate: self)
-    private lazy var doingListViewController = IssueListViewController(status: .doing, delegate: self)
-    private lazy var doneListViewController = IssueListViewController(status: .done, delegate: self)
+    private let viewModel: MainViewModel = MainViewModel()
     
-    private var mainStackView: UIStackView = {
+    private let todoListViewController: IssueListViewController = {
+        let viewModel = IssueListViewModel(status: .todo)
+        let viewController = IssueListViewController(viewModel: viewModel)
+        return viewController
+    }()
+    
+    private let doingListViewController: IssueListViewController = {
+        let viewModel = IssueListViewModel(status: .doing)
+        let viewController = IssueListViewController(viewModel: viewModel)
+        return viewController
+    }()
+    
+    private let doneListViewController: IssueListViewController = {
+        let viewModel = IssueListViewModel(status: .done)
+        let viewController = IssueListViewController(viewModel: viewModel)
+        return viewController
+    }()
+    
+    private let mainStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.spacing = Constant.Layout.columnSpacing
@@ -55,7 +71,9 @@ final class MainViewController: UIViewController {
         title = Constant.Namespace.navigationTitle
         let plusButton = UIBarButtonItem(image: UIImage(systemName: Constant.Namespace.plusImage),
                                          primaryAction: UIAction { _ in
-            let issueViewcontroller = IssueViewController(delegate: self.todoListViewController)
+            let issueViewModel: IssueViewModel = IssueViewModel(isExistingIssue: false, isEditable: true)
+            let issueViewcontroller = IssueViewController(viewModel: issueViewModel)
+            issueViewcontroller.delegate = self.todoListViewController
             let navigationViewController = UINavigationController(rootViewController: issueViewcontroller)
             self.present(navigationViewController, animated: true)
         })
@@ -76,14 +94,13 @@ final class MainViewController: UIViewController {
     private func configureChildViewControllers() {
         [todoListViewController, doingListViewController, doneListViewController].forEach {
             addChild($0)
+            $0.deliveryHandler = deliver
             mainStackView.addArrangedSubview($0.view)
             $0.didMove(toParent: self)
         }
     }
-}
-
-extension MainViewController: IssueListDelegate {
-    func shouldDeliver(issue: Issue) {
+    
+    func deliver(issue: Issue, to status: Status) {
         switch issue.status {
         case .todo:
             todoListViewController.shouldAdd(issue: issue)
