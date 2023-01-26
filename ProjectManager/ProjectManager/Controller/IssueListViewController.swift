@@ -176,7 +176,7 @@ final class IssueListViewController: UIViewController {
         let point = gestureRecognizer.location(in: collectionView)
         let indexPath = self.collectionView?.indexPathForItem(at: point)
         
-        viewModel.action(action: .showPopOver(index: indexPath))
+        viewModel.action(action: .longPress(index: indexPath))
     }
     
     private func showPopover(statusArr: [Status], at indexPath: IndexPath?) {
@@ -226,7 +226,7 @@ extension IssueListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let issue = dataSource?.itemIdentifier(for: indexPath) else { return }
         
-        let issueViewModel: IssueViewModel = IssueViewModel(issue: issue, isExistingIssue: true, isEditable: false)
+        let issueViewModel: IssueViewModel = IssueViewModel(issue: issue, isEditable: false)
         let issueViewcontroller = IssueViewController(viewModel: issueViewModel)
         issueViewcontroller.delegate = self
         let navigationViewController = UINavigationController(rootViewController: issueViewcontroller)

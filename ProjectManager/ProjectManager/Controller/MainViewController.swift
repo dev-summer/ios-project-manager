@@ -19,9 +19,7 @@ final class MainViewController: UIViewController {
             static let plusImage = "plus"
         }
     }
-    
-    private let viewModel: MainViewModel = MainViewModel()
-    
+        
     private let todoListViewController: IssueListViewController = {
         let viewModel = IssueListViewModel(status: .todo)
         let viewController = IssueListViewController(viewModel: viewModel)
@@ -71,7 +69,7 @@ final class MainViewController: UIViewController {
         title = Constant.Namespace.navigationTitle
         let plusButton = UIBarButtonItem(image: UIImage(systemName: Constant.Namespace.plusImage),
                                          primaryAction: UIAction { _ in
-            let issueViewModel: IssueViewModel = IssueViewModel(isExistingIssue: false, isEditable: true)
+            let issueViewModel: IssueViewModel = IssueViewModel(isEditable: true)
             let issueViewcontroller = IssueViewController(viewModel: issueViewModel)
             issueViewcontroller.delegate = self.todoListViewController
             let navigationViewController = UINavigationController(rootViewController: issueViewcontroller)

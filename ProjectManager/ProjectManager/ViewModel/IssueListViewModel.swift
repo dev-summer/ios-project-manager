@@ -10,7 +10,7 @@ import Foundation
 final class IssueListViewModel {
     enum Action {
         case onAppear
-        case showPopOver(index: IndexPath?)
+        case longPress(index: IndexPath?)
         case move(issue: Issue, to: Status)
         case add(issue: Issue)
         case update(issue: Issue)
@@ -53,7 +53,7 @@ final class IssueListViewModel {
         switch action {
         case .onAppear:
             break
-        case let .showPopOver(index):
+        case let .longPress(index):
             statusHandler?(status, index)
         case let .move(issue, to):
             issues = issues.filter { $0.id != issue.id }

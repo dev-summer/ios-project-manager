@@ -33,24 +33,13 @@ final class IssueViewModel {
             static let maxBodyTextCount = 1000
         }
     }
-    
-    // +를 누르면 -> 버튼 눌렸다! 하고 MainVC에서 알려줌
-    // issueId가 nil로 초기화
-    
-    // 기존의 셀을 누르면 -> 셀 데이터를 알려조야함
-    // 셀 데이터는 Issue인데, 꼭 그 전체를 알아야 하나? 만약 id만 알려준다면?
-    // id를 기준으로 issues 배열에서 issue를 찾아온다.
 
     weak var vcDelegate: IssueViewModelDelegate?
     private var issue: Issue?
-    private let isExistingIssue: Bool
     private var isEditable: Bool
-    
-    // 이니셜라이저가 너무 길다...
-    // 분기처리를 하기 위해 다 변수로 만들어주고, 그걸 init할 때 받도록 했기 때문...
-    init(issue: Issue? = nil, isExistingIssue: Bool, isEditable: Bool) {
+
+    init(issue: Issue? = nil, isEditable: Bool) {
         self.issue = issue
-        self.isExistingIssue = isExistingIssue
         self.isEditable = isEditable
     }
     
