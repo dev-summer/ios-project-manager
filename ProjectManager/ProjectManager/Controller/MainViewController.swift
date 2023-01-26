@@ -51,7 +51,6 @@ final class MainViewController: UIViewController {
             bottom: Constant.Layout.mainStackViewMargin,
             trailing: Constant.Layout.mainStackViewMargin
         )
-        
         return stack
     }()
     

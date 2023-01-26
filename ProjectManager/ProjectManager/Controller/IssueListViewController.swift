@@ -42,7 +42,6 @@ final class IssueListViewController: UIViewController {
             trailing: Constant.Layout.margin
         )
         stack.translatesAutoresizingMaskIntoConstraints = false
-        
         return stack
     }()
     
@@ -125,10 +124,8 @@ final class IssueListViewController: UIViewController {
                 title: Constant.Namespace.delete
             ) { _, _, _  in
                 guard let issue = self.dataSource?.itemIdentifier(for: indexPath) else { return }
-                
                 self.viewModel.action(action: .delete(issue: issue))
             }
-            
             return UISwipeActionsConfiguration(actions: [deleteAction])
         }
         
@@ -151,7 +148,6 @@ final class IssueListViewController: UIViewController {
                 for: indexPath,
                 item: itemIdentifier
             )
-            
             return cell
         }
     }
@@ -220,7 +216,6 @@ final class IssueListViewController: UIViewController {
         ) { _ in
             self.viewModel.action(action: .move(issue: issue, to: status))
         }
-        
         return action
     }
 }

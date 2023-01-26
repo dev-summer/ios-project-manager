@@ -33,11 +33,11 @@ final class IssueViewModel {
             static let maxBodyTextCount = 1000
         }
     }
-
+    
     weak var delegate: IssueViewModelDelegate?
     private var issue: Issue?
     private var isEditable: Bool
-
+    
     init(issue: Issue? = nil, isEditable: Bool) {
         self.issue = issue
         self.isEditable = isEditable
@@ -64,15 +64,15 @@ final class IssueViewModel {
             delegate?.dismissModal()
         }
     }
-
+    
     private func addOrUpdate(title: String, body: String, date: Date) {
         if issue == nil {
             let newIssue = Issue(
                 id: UUID(),
-                          status: .todo,
-                          title: title,
-                          body: body,
-                          deadline: date
+                status: .todo,
+                title: title,
+                body: body,
+                deadline: date
             )
             delegate?.add(issue: newIssue)
         } else {

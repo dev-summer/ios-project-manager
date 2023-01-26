@@ -40,7 +40,6 @@ final class IssueViewController: UIViewController {
             trailing: Constant.Layout.margin
         )
         stack.translatesAutoresizingMaskIntoConstraints = false
-        
         return stack
     }()
     
@@ -58,7 +57,6 @@ final class IssueViewController: UIViewController {
         textField.adjustsFontForContentSizeCategory = true
         textField.setContentHuggingPriority(.required, for: .vertical)
         textField.addShadow(radius: Constant.Layout.shadowRadius)
-        
         return textField
     }()
     
@@ -68,7 +66,6 @@ final class IssueViewController: UIViewController {
         picker.preferredDatePickerStyle = .wheels
         picker.locale = .current
         picker.translatesAutoresizingMaskIntoConstraints = false
-        
         return picker
     }()
     
@@ -79,7 +76,6 @@ final class IssueViewController: UIViewController {
         textView.adjustsFontForContentSizeCategory = true
         textView.setContentHuggingPriority(.defaultLow, for: .vertical)
         textView.addShadow(radius: Constant.Layout.shadowRadius)
-        
         return textView
     }()
     
