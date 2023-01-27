@@ -61,26 +61,7 @@ final class IssueListViewController: UIViewController {
         configureUI()
         configureDataSource()
         setLongPressGestureRecognizer()
-        
-        viewModel.bindStatus { (status, indexPath) in
-            let arr = Status.allCases.filter { $0 != status }
-            self.showPopover(statusArr: arr, at: indexPath)
-        }
-        
-        viewModel.bindIssues { [weak self] issues in
-            guard let self = self else { return }
-            self.applySnapshot(issues: issues)
-            self.headerView.configureContent(
-                title: String(describing: self.viewModel.status),
-                count: issues.count
-            )
-        }
-        
-        viewModel.bindIssueDeliveryHandler { issue in
-            self.deliveryHandler?(issue, issue.status)
-        }
-        
-        viewModel.bindDeleteHandler(closure: self.deleteIssue(issue:))
+        bind()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -145,6 +126,30 @@ final class IssueListViewController: UIViewController {
         }
     }
     
+    private func bind() {
+        viewModel.bindStatus { [weak self] (status, indexPath) in
+            let arr = Status.allCases.filter { $0 != status }
+            self?.showPopover(options: arr, at: indexPath)
+        }
+        
+        viewModel.bindIssues { [weak self] issues in
+            guard let self = self else { return }
+            self.applySnapshot(issues: issues)
+            self.headerView.configureContent(
+                title: String(describing: self.viewModel.status),
+                count: issues.count
+            )
+        }
+        
+        viewModel.bindIssueDeliveryHandler { [weak self] issue in
+            self?.deliveryHandler?(issue, issue.status)
+        }
+        
+        viewModel.bindDeleteHandler { [weak self] issue in
+            self?.deleteIssue(issue: issue)
+        }
+    }
+    
     private func applySnapshot(issues: [Issue]) {
         var snapshot = NSDiffableDataSourceSnapshot<Constant.Section, Issue>()
         snapshot.appendSections([.main])
@@ -177,8 +182,7 @@ final class IssueListViewController: UIViewController {
         viewModel.action(action: .longPress(index: indexPath))
     }
     
-    private func showPopover(statusArr: [Status], at indexPath: IndexPath?) {
-        // 굳이 indexPath로 받아올 필요가 잇나? 그냥 issue로 만들어준 다음에 받아와도 되는데
+    private func showPopover(options: [Status], at indexPath: IndexPath?) {
         guard let indexPath = indexPath,
               let selectedCell = collectionView?.cellForItem(at: indexPath) as? CustomListCell,
               let issue = selectedCell.item else { return }
