@@ -102,6 +102,8 @@ final class CustomContentView: UIView, UIContentView {
         if configuration.status != .done,
            deadline.isOverdue {
             dueDateLabel.textColor = .systemRed
+        } else if !deadline.isOverdue {
+            dueDateLabel.textColor = .none
         }
     }
 }
