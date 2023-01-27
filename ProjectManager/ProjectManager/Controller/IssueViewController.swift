@@ -25,10 +25,10 @@ final class IssueViewController: UIViewController {
         }
     }
     
-    private var viewModel: IssueViewModel
+    private let viewModel: IssueViewModel
     weak var delegate: IssueDelegate?
     
-    private var stackView: UIStackView = {
+    private let stackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.spacing = Constant.Layout.stackViewSpacing
@@ -43,7 +43,7 @@ final class IssueViewController: UIViewController {
         return stack
     }()
     
-    private var titleTextField: PaddedTextField = {
+    private let titleTextField: PaddedTextField = {
         let padding = UIEdgeInsets(
             top: Constant.Layout.titleTextFieldPadding,
             left: Constant.Layout.titleTextFieldPadding,
@@ -60,7 +60,7 @@ final class IssueViewController: UIViewController {
         return textField
     }()
     
-    private var datePicker: UIDatePicker = {
+    private let datePicker: UIDatePicker = {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .wheels
@@ -69,7 +69,7 @@ final class IssueViewController: UIViewController {
         return picker
     }()
     
-    private var bodyTextView: UITextView = {
+    private let bodyTextView: UITextView = {
         let textView = UITextView()
         textView.backgroundColor = .systemBackground
         textView.font = .preferredFont(forTextStyle: .body)

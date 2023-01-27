@@ -29,7 +29,7 @@ final class IssueListViewController: UIViewController {
     var deliveryHandler: ((Issue, Status) -> Void)?
     private var dataSource: UICollectionViewDiffableDataSource<Constant.Section, Issue>?
     
-    private var stackView: UIStackView = {
+    private let stackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.spacing = Constant.Layout.spacing
@@ -44,7 +44,7 @@ final class IssueListViewController: UIViewController {
         return stack
     }()
     
-    private var headerView = HeaderView()
+    private let headerView = HeaderView()
     private var collectionView: UICollectionView?
     
     init(frame: CGRect = .zero, viewModel: IssueListViewModel) {
