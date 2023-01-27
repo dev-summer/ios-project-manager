@@ -89,6 +89,12 @@ final class IssueListViewController: UIViewController {
     }
     
     private func configureCollectionView() {
+        let listLayout = configureListLayout()
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: listLayout)
+        collectionView?.delegate = self
+    }
+    
+    private func configureListLayout() -> UICollectionViewCompositionalLayout {
         var listConfiguration = UICollectionLayoutListConfiguration(appearance: .plain)
         listConfiguration.separatorConfiguration.topSeparatorVisibility = .hidden
         listConfiguration.separatorConfiguration.bottomSeparatorVisibility = .hidden
@@ -103,9 +109,7 @@ final class IssueListViewController: UIViewController {
             return UISwipeActionsConfiguration(actions: [deleteAction])
         }
         
-        let layout = UICollectionViewCompositionalLayout.list(using: listConfiguration)
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView?.delegate = self
+        return UICollectionViewCompositionalLayout.list(using: listConfiguration)
     }
     
     private func configureDataSource() {
