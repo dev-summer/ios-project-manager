@@ -27,7 +27,6 @@ final class IssueListViewController: UIViewController {
     
     private var viewModel: IssueListViewModel
     var deliveryHandler: ((Issue, Status) -> Void)?
-    
     private var dataSource: UICollectionViewDiffableDataSource<Constant.Section, Issue>?
     
     private var stackView: UIStackView = {
@@ -70,19 +69,13 @@ final class IssueListViewController: UIViewController {
         
         viewModel.bindIssues { [weak self] issues in
             guard let self = self else { return }
-            // 테이블뷰에 스냅샷
             self.applySnapshot(issues: issues)
-            // countLabel 업데이트
             self.headerView.configureContent(
                 title: String(describing: self.viewModel.status),
                 count: issues.count
             )
         }
         
-        // weak self를 습관처럼 써주는 이유
-        // weak self를 안써주면 클로저 안의 작업이 끝나고 나서야 뷰컨이 deinit
-        // weak self를 쓰면 클로저한테 self를 복사해주고 난 뒤에 뷰컨 바로 deinit
-        // -> 메모리 관리 측면에서 안전
         viewModel.bindIssueDeliveryHandler { issue in
             self.deliveryHandler?(issue, issue.status)
         }
