@@ -186,22 +186,18 @@ final class IssueListViewController: UIViewController {
         guard let indexPath = indexPath,
               let selectedCell = collectionView?.cellForItem(at: indexPath) as? CustomListCell,
               let issue = selectedCell.item else { return }
-        //
         
-        // alertController 만드는 부분 분리
         let alertController = UIAlertController(
             title: nil,
             message: nil,
             preferredStyle: .actionSheet
         )
         
-        statusArr.map { createAlertAction(issue: issue, to: $0) }
+        options.map { createAlertAction(issue: issue, to: $0) }
             .forEach { alertController.addAction($0) }
-        
         alertController.popoverPresentationController?.sourceView = collectionView
         alertController.popoverPresentationController?.sourceRect = selectedCell.frame
         alertController.popoverPresentationController?.permittedArrowDirections = [.up, .down]
-        //
         
         present(alertController, animated: true)
     }
