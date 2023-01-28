@@ -33,7 +33,7 @@ final class IssueListViewModel {
         self.status = status
     }
     
-    func bindStatus(closure: @escaping ((Status, IndexPath?) -> Void)) {
+    func showPopover(closure: @escaping ((Status, IndexPath?) -> Void)) {
         self.statusHandler = closure
     }
     
@@ -45,7 +45,7 @@ final class IssueListViewModel {
         self.issueDeliveryHandler = closure
     }
     
-    func bindDeleteHandler(closure: @escaping ((Issue) -> Void)) {
+    func deleteIssue(closure: @escaping ((Issue) -> Void)) {
         self.deleteHandler = closure
     }
     

@@ -131,9 +131,9 @@ final class IssueListViewController: UIViewController {
     }
     
     private func bind() {
-        viewModel.bindStatus { [weak self] (status, indexPath) in
-            let arr = Status.allCases.filter { $0 != status }
-            self?.showPopover(options: arr, at: indexPath)
+        viewModel.showPopover { [weak self] (status, indexPath) in
+            let options = Status.allCases.filter { $0 != status }
+            self?.showPopover(with: options, at: indexPath)
         }
         
         viewModel.bindIssues { [weak self] issues in
@@ -149,7 +149,7 @@ final class IssueListViewController: UIViewController {
             self?.deliveryHandler?(issue, issue.status)
         }
         
-        viewModel.bindDeleteHandler { [weak self] issue in
+        viewModel.deleteIssue { [weak self] issue in
             self?.deleteIssue(issue: issue)
         }
     }
@@ -186,7 +186,7 @@ final class IssueListViewController: UIViewController {
         viewModel.action(action: .longPress(index: indexPath))
     }
     
-    private func showPopover(options: [Status], at indexPath: IndexPath?) {
+    private func showPopover(with options: [Status], at indexPath: IndexPath?) {
         guard let indexPath = indexPath,
               let selectedCell = collectionView?.cellForItem(at: indexPath) as? CustomListCell,
               let issue = selectedCell.item else { return }
