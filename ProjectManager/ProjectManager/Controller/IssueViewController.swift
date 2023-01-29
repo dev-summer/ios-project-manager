@@ -26,6 +26,7 @@ final class IssueViewController: UIViewController {
     }
     
     private let viewModel: IssueViewModel
+    private weak var textViewDelegate: UITextViewDelegate?
     weak var delegate: IssueDelegate?
     
     private let stackView: UIStackView = {
@@ -91,6 +92,7 @@ final class IssueViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        textViewDelegate = self
         viewModel.delegate = self
         viewModel.action(action: .onAppear)
     }
