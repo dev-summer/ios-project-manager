@@ -95,21 +95,31 @@ final class IssueListViewController: UIViewController {
     }
     
     private func configureListLayout() -> UICollectionViewCompositionalLayout {
-        var listConfiguration = UICollectionLayoutListConfiguration(appearance: .plain)
-        listConfiguration.separatorConfiguration.topSeparatorVisibility = .hidden
-        listConfiguration.separatorConfiguration.bottomSeparatorVisibility = .hidden
-        listConfiguration.trailingSwipeActionsConfigurationProvider = { indexPath in
-            let deleteAction = UIContextualAction(
-                style: .destructive,
-                title: Constant.Namespace.delete
-            ) { _, _, _  in
-                guard let issue = self.dataSource?.itemIdentifier(for: indexPath) else { return }
-                self.viewModel.action(action: .delete(issue: issue))
+        let sectionProvider = { (_: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
+            let section: NSCollectionLayoutSection
+            
+            var listConfiguration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+            listConfiguration.backgroundColor = .systemBackground
+            listConfiguration.separatorConfiguration.topSeparatorVisibility = .hidden
+            listConfiguration.separatorConfiguration.bottomSeparatorVisibility = .hidden
+            listConfiguration.trailingSwipeActionsConfigurationProvider = { indexPath in
+                let deleteAction = UIContextualAction(
+                    style: .destructive,
+                    title: Constant.Namespace.delete
+                ) { _, _, _  in
+                    guard let issue = self.dataSource?.itemIdentifier(for: indexPath) else { return }
+                    self.viewModel.action(action: .delete(issue: issue))
+                }
+                return UISwipeActionsConfiguration(actions: [deleteAction])
             }
-            return UISwipeActionsConfiguration(actions: [deleteAction])
+            
+            section = NSCollectionLayoutSection.list(using: listConfiguration, layoutEnvironment: layoutEnvironment)
+            section.contentInsets = NSDirectionalEdgeInsets(top: .zero, leading: .zero, bottom: .zero, trailing: .zero)
+            section.interGroupSpacing = Constant.Layout.spacing
+            return section
         }
         
-        return UICollectionViewCompositionalLayout.list(using: listConfiguration)
+        return UICollectionViewCompositionalLayout(sectionProvider: sectionProvider)
     }
     
     private func configureDataSource() {

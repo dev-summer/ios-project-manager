@@ -34,9 +34,6 @@ final class CustomContentView: UIView, UIContentView {
             bottom: Constant.Layout.margin,
             trailing: Constant.Layout.margin
         )
-        stack.layer.borderWidth = Constant.Layout.borderWidth
-        stack.layer.borderColor = UIColor.systemGray.cgColor
-        stack.layer.cornerRadius = Constant.Layout.cornerRadius
         return stack
     }()
     
@@ -68,12 +65,9 @@ final class CustomContentView: UIView, UIContentView {
     }
     
     private func configureViews() {
-        directionalLayoutMargins = NSDirectionalEdgeInsets(
-            top: Constant.Layout.margin,
-            leading: Constant.Layout.margin,
-            bottom: Constant.Layout.margin,
-            trailing: Constant.Layout.margin
-        )
+        layer.borderWidth = Constant.Layout.borderWidth
+        layer.borderColor = UIColor.systemGray.cgColor
+        layer.cornerRadius = Constant.Layout.cornerRadius
         configureStackView()
     }
     
@@ -81,10 +75,10 @@ final class CustomContentView: UIView, UIContentView {
         addSubview(stackView)
         
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
-            stackView.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor),
-            stackView.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor)
+            stackView.topAnchor.constraint(equalTo: topAnchor),
+            stackView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
         
         [titleLabel, bodyLabel, dueDateLabel].forEach { stackView.addArrangedSubview($0) }
