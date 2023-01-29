@@ -40,18 +40,24 @@ final class CustomContentView: UIView, UIContentView {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = .preferredFont(forTextStyle: .headline)
+        label.adjustsFontForContentSizeCategory = true
         return label
     }()
     
     private let bodyLabel: UILabel = {
         let label = UILabel()
         label.font = .preferredFont(forTextStyle: .body)
+        label.adjustsFontForContentSizeCategory = true
         label.textColor = .systemGray
         label.numberOfLines = Constant.Layout.maxBodyLineCount
         return label
     }()
     
-    private let dueDateLabel = UILabel()
+    private let dueDateLabel: UILabel = {
+        let label = UILabel()
+        label.adjustsFontForContentSizeCategory = true
+        return label
+    }()
     
     init(configuration: UIContentConfiguration) {
         self.configuration = configuration

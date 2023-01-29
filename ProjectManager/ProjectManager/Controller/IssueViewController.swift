@@ -66,6 +66,7 @@ final class IssueViewController: UIViewController {
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .wheels
         picker.locale = .current
+        picker.backgroundColor = .systemBackground
         picker.translatesAutoresizingMaskIntoConstraints = false
         return picker
     }()
