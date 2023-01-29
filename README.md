@@ -19,10 +19,10 @@
 
 - MVC 구조로 구현 후 MVVM 구조로 리팩토링
 - Modern Collection View(Compositional Layout) 활용
-    - list layout custom cell 구현
 - DiffableDataSource 활용
 - `UIAction` 활용
-- `DateComponents` 활용
+- `UIDatePicker`, `DateComponents` 활용
+- Dynamic Type Size 적용
 
 ---
 
