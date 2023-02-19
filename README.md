@@ -30,15 +30,15 @@
 
 | 앱 메인 화면 | 새로운 이슈 생성 |
 | :---: | :---: |
-| <img src=https://i.imgur.com/dPI0yKk.png width="400"> | <img src=https://i.imgur.com/XONd38r.png width="400"> |
+| <img src=https://i.imgur.com/dPI0yKk.png width="300"> | <img src=https://i.imgur.com/XONd38r.png width="300"> |
 
 | 기존 이슈 수정 | 이슈 상태 변경 |
 | :---: | :---: |
-| <img src=https://i.imgur.com/G7MqjBb.gif width="400"> | <img src=https://i.imgur.com/FFaBiTj.gif width="400"> |
+| <img src=https://i.imgur.com/G7MqjBb.gif width="300"> | <img src=https://i.imgur.com/FFaBiTj.gif width="300"> |
 
 | 스와이프로 이슈 삭제 |
 | :---: |
-| <img src=https://i.imgur.com/zN4e3Wd.gif width="400"> |
+| <img src=https://i.imgur.com/zN4e3Wd.gif width="300"> |
 
 ---
 
